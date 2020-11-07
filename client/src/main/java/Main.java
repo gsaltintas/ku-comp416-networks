@@ -6,12 +6,38 @@ public class Main {
         ConnectionToServer connectionToServer = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, ConnectionToServer.DEFAULT_SERVER_PORT);
         connectionToServer.Connect();
         Scanner scanner = new Scanner(System.in);
-        boolean authenticated = connectionToServer.authenticate(scanner);
+//        boolean authenticated = connectionToServer.authenticate(scanner);
+        boolean authenticated = true;
         if (authenticated) {
             ConnectionToServer connectionToData = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, ConnectionToServer.DEFAULT_DATA_PORT);
             connectionToData.Connect();
+            Request request = new Request();
+            request.displayOptions();
+            String reqType = scanner.nextLine();
 
+            while (!reqType.equalsIgnoreCase("quit")) {
+
+                String hashValue = request.sendRequest(reqType, scanner, connectionToServer);
+//                try {
+//                    // todo: data transfer
+//                    connectionToData.SendForAnswer();
+//                }
+            }
+            connectionToData.Disconnect();
         }
+        /**
+         * Pass the requests to the server
+         * 5) Receive the hash value of the file on the Command socket
+         * 6) Receive the files over the Data socket
+         * 7) Confirm if the hash value corresponds to the file
+         * 8) Request retransmit from the server if mismatch between hash value and file or failure to
+         * receive file (Relevant String should be displayed in terminal). A scenario for this step
+         * may be specifically designed for demonstration purposes.)
+         * 9) Display the files in the appropriate manner.
+         * 10) Terminate the connection in case an appropriate file is received and no other request
+         * forwarded within the timeout duration. (Appropriate tests for demonstration purposes
+         * should be developed.)
+         */
 
         connectionToServer.Disconnect();
 

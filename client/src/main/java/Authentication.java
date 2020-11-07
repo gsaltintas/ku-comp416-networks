@@ -25,7 +25,7 @@ public class Authentication {
             System.out.println("Response from server: " + response);
             message = scanner.nextLine();
             response = connection.SendForAnswer(AuthenticationMessages.Auth_Request + AuthenticationMessages.DELIMITER + message);
-            // todo: handle client timeout
+            // todo: handle client timeout use isConnectionActive of connection
             /**
              long start = System.currentTimeMillis();
              long now = System.currentTimeMillis();
