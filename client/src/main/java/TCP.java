@@ -66,10 +66,12 @@ public class TCP {
 //            inputStream.skipBytes(rem);
 //            return null;
 //        }
+   */
+
         int payload_size = inputStream.readInt();
         return inputStream.readNBytes(payload_size);
-         */
-        return inputStream.readAllBytes();
+
+        // return inputStream.readAllBytes();
     }
 
     public static String readQueryCommunicationResult(DataInputStream inputStream) throws IOException {

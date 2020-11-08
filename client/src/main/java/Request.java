@@ -43,7 +43,7 @@ public class Request {
             file.write(dataBytes);
             hashValue = file.hashCode();
             file.close();
-            System.out.println(String.format("Image saved at %s", filename));
+            System.out.println(String.format("File saved at %s", filename));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -59,6 +59,7 @@ public class Request {
             imageFile.write(imgBytes);
             imageFile.close();
             System.out.println(String.format("Image saved at %s", filename));
+            System.out.println(imageFile.getFD());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -85,11 +86,25 @@ public class Request {
             int hashValue = connectionToServer.inputStream.readInt();
             System.out.println("Hash: " + hashValue);
             byte[] dataBytes = TCP.readQueryDataResult(connectionToData.inputStream);
-
-            String filename = String.format("%d-%s-%s", requestType, request, now());
-            int receivedHash = Request.constructFile(filename, dataBytes);
-            if (receivedHash != hashValue) {
+            String fileExtension = "json";
+            // todo: quick tabular format print
+            if (requestType == WeatherRequests.BasicWeatherMaps.getValue())
+                fileExtension = "png";
+            //             (requestType==WeatherRequests.BasicWeatherMaps.getValue()) : ".json";
+            String filename = String.format("%d-%s.%s", requestType, request, fileExtension);
+            int receivedHash = Arrays.hashCode(dataBytes);
+            Request.constructFile(filename, dataBytes);
+            while (receivedHash != hashValue) {
                 // request retransfer
+                System.out.println("Hash values mismatch, re-requesting file transfer.");
+                TCP.writeQueryMessage(connectionToServer.outputStream, token, weatherRequest, request);
+                hashValue = connectionToServer.inputStream.readInt();
+                dataBytes = TCP.readQueryDataResult(connectionToData.inputStream);
+                filename = String.format("%d-%s.%s", requestType, request, fileExtension);
+                receivedHash = Arrays.hashCode(dataBytes);
+                Request.constructFile(filename, dataBytes);
+
+
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();

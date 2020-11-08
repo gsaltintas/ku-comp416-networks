@@ -20,10 +20,13 @@ public class Main {
 
                 Request requestHandler = new Request(connectionToServer, connectionToData);
                 requestHandler.displayOptions();
-                while (scanner.hasNext()) {
-                    String request = scanner.nextLine();
+                String request = scanner.nextLine();
+                while (scanner.hasNext() || !scanner.next().equalsIgnoreCase("quit")) {
 
                     requestHandler.request(request);
+                    System.out.println("If you would like to quit type so.");
+                    request = scanner.nextLine();
+
                 }
                 connectionToData.Disconnect();
 
