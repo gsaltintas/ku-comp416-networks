@@ -1,5 +1,7 @@
-
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -7,8 +9,8 @@ import java.util.Scanner;
  * 1) Confirm its authenticity with the server 🗸
  * 2) Be able to submit requests to the server. 🗸
  * 3) Be able to receive data in form of JSON/image files from the server over the Data
- * socket.
- * 4) Verify the file based on its digital signature.
+ * socket. 🗸
+ * 4) Verify the file based on its digital signature. 🗸
  * 5) Display the JSON data in tabular form or display the image on the client side
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Client-Server Interaction
@@ -130,8 +132,17 @@ public class ConnectionToServer {
         }
     }
 
-    /** checks if the connection is still active */
+    /**
+     * checks if the connection is still active
+     */
     public boolean isConnectionActive() {
         return this.socket != null && this.socket.isConnected() && !this.socket.isClosed() && !this.serverClosedSocket;
+    }
+
+    public int getIntToken() {
+        if (this.token != null) {
+            return Integer.parseInt(this.token);
+        }
+        return 0;
     }
 }

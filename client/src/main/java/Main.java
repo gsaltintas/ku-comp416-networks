@@ -1,4 +1,4 @@
-
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -11,26 +11,18 @@ public class Main {
         boolean authenticated = connectionToServer.authenticate(scanner);
         if (authenticated) {
             try {
-                int dataPort = connectionToServer.inputStream.readInt();
+                int dataPort = connectionToServer.inputStream.readInt(); // get the address of the data socket
+                System.out.println(dataPort);
+                // establish a connection to the data port
                 ConnectionToServer connectionToData = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, dataPort);
                 connectionToData.Connect();
-                Request request = new Request();
-                request.displayOptions();
-                String reqType = scanner.nextLine();
 
-                // Ilk byte 1 olacak,
-                // Token pass writeInt
-                // Type da 1 byte
-                // Size -> payload size
-                // Payload -> Type a gore payload handle edilecek. Delimiter: ,
+                Request requestHandler = new Request(connectionToServer, connectionToData);
+                requestHandler.displayOptions();
+                while (scanner.hasNext()) {
+                    String request = scanner.nextLine();
 
-                while (!reqType.equalsIgnoreCase("quit")) {
-
-                    String hashValue = request.sendRequest(reqType, scanner, connectionToServer);
-//                try {
-//                    // todo: data transfer
-//                    connectionToData.SendForAnswer();
-//                }
+                    requestHandler.request(request);
                 }
                 connectionToData.Disconnect();
 
