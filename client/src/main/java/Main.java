@@ -6,9 +6,9 @@ public class Main {
         ConnectionToServer connectionToServer = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, ConnectionToServer.DEFAULT_SERVER_PORT);
         connectionToServer.Connect();
         Scanner scanner = new Scanner(System.in);
-//        boolean authenticated = connectionToServer.authenticate(scanner);
-        boolean authenticated = true;
-        if (authenticated) {
+        boolean authenticated = connectionToServer.authenticate(scanner);
+//        boolean authenticated = true;
+        /*if (authenticated) {
             ConnectionToServer connectionToData = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, ConnectionToServer.DEFAULT_DATA_PORT);
             connectionToData.Connect();
             Request request = new Request();
@@ -24,7 +24,14 @@ public class Main {
 //                }
             }
             connectionToData.Disconnect();
+        }*/
+        String message = scanner.nextLine();
+        while (!message.equals("QUIT"))
+        {
+            System.out.println("Response from server: " + connectionToServer.SendForAnswer(message));
+            message = scanner.nextLine();
         }
+        connectionToServer.Disconnect();
         /**
          * Pass the requests to the server
          * 5) Receive the hash value of the file on the Command socket
@@ -39,7 +46,7 @@ public class Main {
          * should be developed.)
          */
 
-        connectionToServer.Disconnect();
+        //connectionToServer.Disconnect();
 
 //        if (token != "") {
 //            System.out.println("Authentication successfull");

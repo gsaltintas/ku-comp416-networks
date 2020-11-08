@@ -1,11 +1,7 @@
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * 1) Confirm its authenticity with the server 🗸
@@ -41,10 +37,10 @@ public class ConnectionToServer {
     private boolean serverClosedSocket;
     //    public static final
     private static long TIMEOUT = 10000;
-    private Socket s;
+    private Socket socket;
     //private BufferedReader br;
-    protected BufferedReader is;
-    protected PrintWriter os;
+    protected DataInputStream inputStream;
+    protected DataOutputStream outputStream;
     protected String token;
     Authentication auth;
 
@@ -66,14 +62,13 @@ public class ConnectionToServer {
      */
     public void Connect() {
         try {
-            s = new Socket(serverAddress, serverPort);
+            socket = new Socket(serverAddress, serverPort);
             //br= new BufferedReader(new InputStreamReader(System.in));
             /*
             Read and write buffers on the socket
              */
-            is = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            os = new PrintWriter(s.getOutputStream());
-
+            inputStream = new DataInputStream(socket.getInputStream());
+            outputStream = new DataOutputStream(socket.getOutputStream());
             this.serverClosedSocket = false;
             System.out.println("Successfully connected to " + serverAddress + " on port " + serverPort);
         } catch (EOFException e) {
@@ -99,16 +94,18 @@ public class ConnectionToServer {
     public String SendForAnswer(String message) {
         String response = new String();
         try {
+
+            // TCP.writeAuthMessage(this.outputStream, );
             /*
             Sends the message to the server via PrintWriter
              */
-            os.println(message);
-            os.flush();
+            //outputStream.println(message);
+            //outputStream.flush();
             /*
             Reads a line from the server via Buffer Reader
              */
 
-            response = is.readLine();
+            response = inputStream.readLine();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("ConnectionToServer. SendForAnswer. Socket read Error");
@@ -123,11 +120,11 @@ public class ConnectionToServer {
     public void Disconnect() {
         try {
             serverClosedSocket = true;
-            is.close();
-            os.close();
+            inputStream.close();
+            outputStream.close();
             //br.close();
-            s.close();
-            System.out.println(String.format("ConnectionToServer. SendForAnswer. Connection Closed at %s port: %s", s.getInetAddress(), s.getLocalSocketAddress()));
+            socket.close();
+            System.out.println(String.format("ConnectionToServer. SendForAnswer. Connection Closed at %s port: %s", socket.getInetAddress(), socket.getLocalSocketAddress()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -135,6 +132,6 @@ public class ConnectionToServer {
 
     /** checks if the connection is still active */
     public boolean isConnectionActive() {
-        return this.s != null && this.s.isConnected() && !this.s.isClosed() && !this.serverClosedSocket;
+        return this.socket != null && this.socket.isConnected() && !this.socket.isClosed() && !this.serverClosedSocket;
     }
 }
