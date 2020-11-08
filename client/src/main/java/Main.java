@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -16,13 +17,21 @@ public class Main {
             String reqType = scanner.nextLine();
 
             while (!reqType.equalsIgnoreCase("quit")) {
-
+                // todo: make it
                 String hashValue = request.sendRequest(reqType, scanner, connectionToServer);
-//                try {
-//                    // todo: data transfer
-//                    connectionToData.SendForAnswer();
-//                }
+                try {
+                    // todo: data transfer
+                    String data = "";
+//                    String data = connectionToData.listenToDataTransfer();
+                    if ("" + data.hashCode() != hashValue) {
+                        System.out.println("File transfer compromised, closing connection");
+                        //todo: inform server side
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            // todo: timeout
             connectionToData.Disconnect();
         }
         /**

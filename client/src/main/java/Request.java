@@ -47,15 +47,15 @@ public class Request {
     }
 
     /**
-     * decodes the given string to an image
+     * decodes the given string to an image/JSON
      */
-    public static byte[] decodeImage(String imgDataString) {
-        return Base64.getDecoder().decode(imgDataString);
+    public static byte[] decodeFileData(String dataString) {
+        return Base64.getDecoder().decode(dataString);
     }
 
     public static void constructImage(String filename, String imgDataString) {
         try {
-            byte[] imgBytes = decodeImage(imgDataString);
+            byte[] imgBytes = decodeFileData(imgDataString);
             FileOutputStream imageFile = new FileOutputStream(filename);
             imageFile.write(imgBytes);
             imageFile.close();
