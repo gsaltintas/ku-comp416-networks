@@ -84,6 +84,7 @@ public class Request {
             TCP.writeQueryMessage(connectionToServer.outputStream, token, weatherRequest, request);
             // int hashValue = Integer.parseInt(TCP.readQueryCommunicationResult(connectionToServer.inputStream));
             int hashValue = connectionToServer.inputStream.readInt();
+            long timestamp = connectionToServer.inputStream.readLong();
             System.out.println("Hash: " + hashValue);
             byte[] dataBytes = TCP.readQueryDataResult(connectionToData.inputStream);
             String fileExtension = "json";
@@ -95,6 +96,7 @@ public class Request {
             int receivedHash = Arrays.hashCode(dataBytes);
             Request.constructFile(filename, dataBytes);
             while (receivedHash != hashValue) {
+                connectionToServer.outputStream.writeInt("No".hashCode());
                 // request retransfer
                 System.out.println("Hash values mismatch, re-requesting file transfer.");
                 TCP.writeQueryMessage(connectionToServer.outputStream, token, weatherRequest, request);
@@ -103,9 +105,8 @@ public class Request {
                 filename = String.format("%d-%s.%s", requestType, request, fileExtension);
                 receivedHash = Arrays.hashCode(dataBytes);
                 Request.constructFile(filename, dataBytes);
-
-
             }
+            connectionToServer.outputStream.writeInt("Yes".hashCode()); // File received
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
