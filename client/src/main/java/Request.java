@@ -1,11 +1,12 @@
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-
-import static java.time.LocalDateTime.now;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Request {
     private ConnectionToServer connectionToServer;
@@ -27,14 +28,6 @@ public class Request {
         }
     }
 
-
-    /**
-     * decodes the given string to an image/JSON
-     */
-    public static byte[] decodeFileData(String dataString) {
-        return Base64.getDecoder().decode(dataString);
-    }
-
     public static int constructFile(String filename, byte[] dataBytes) {
         int hashValue = 0;
         try {
@@ -52,20 +45,12 @@ public class Request {
         return hashValue;
     }
 
-    public static void constructImage(String filename, String imgDataString) {
-        try {
-            byte[] imgBytes = decodeFileData(imgDataString);
-            FileOutputStream imageFile = new FileOutputStream(filename);
-            imageFile.write(imgBytes);
-            imageFile.close();
-            System.out.println(String.format("Image saved at %s", filename));
-            System.out.println(imageFile.getFD());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
+    public static String getDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd_hh:mm:ss");
+        String strDate = dateFormat.format(date);
+        return strDate;
     }
 
     /**
@@ -91,7 +76,7 @@ public class Request {
             if (requestType == WeatherRequests.BasicWeatherMaps.getValue())
                 fileExtension = "png";
             //             (requestType==WeatherRequests.BasicWeatherMaps.getValue()) : ".json";
-            String filename = String.format("%d-%s.%s", requestType, request, fileExtension);
+            String filename = String.format("%d-%s.%s", requestType, request, fileExtension).replace(",", "_");
             int receivedHash = Arrays.hashCode(dataBytes);
             Request.constructFile(filename, dataBytes);
             while (receivedHash != hashValue) {
@@ -103,19 +88,15 @@ public class Request {
                 filename = String.format("%d-%s.%s", requestType, request, fileExtension);
                 receivedHash = Arrays.hashCode(dataBytes);
                 Request.constructFile(filename, dataBytes);
+            }
 
-
+            if (filename.endsWith("jpg")) {
+                JFrame frame = new JFrame();
+                ImageIcon icon = new ImageIcon(filename);
+                JLabel label = new JLabel(icon);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
-
-//
-        // Ilk byte 1 olacak,
-        // Token pass writeInt
-        // Type da 1 byte
-        // Size -> payload size
-        // Payload -> Type a gore payload handle edilecek. Delimiter: ,
-
     }
 }

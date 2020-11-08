@@ -37,10 +37,8 @@ public class ConnectionToServer {
     public static final int DEFAULT_SERVER_PORT = 4444;
     public static final int DEFAULT_DATA_PORT = 4443;
     private boolean serverClosedSocket;
-    //    public static final
     private static long TIMEOUT = 10000;
     private Socket socket;
-    //private BufferedReader br;
     protected DataInputStream inputStream;
     protected DataOutputStream outputStream;
     protected String token;
@@ -86,35 +84,6 @@ public class ConnectionToServer {
         this.token = this.auth.authenticate(scanner, this);
         return this.token != "";
     }
-
-    /**
-     * sends the message String to the server and retrives the answer
-     *
-     * @param message input message string to the server
-     * @return the received server answer
-     */
-    public String SendForAnswer(String message) {
-        String response = new String();
-        try {
-
-            // TCP.writeAuthMessage(this.outputStream, );
-            /*
-            Sends the message to the server via PrintWriter
-             */
-            //outputStream.println(message);
-            //outputStream.flush();
-            /*
-            Reads a line from the server via Buffer Reader
-             */
-
-            response = inputStream.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("ConnectionToServer. SendForAnswer. Socket read Error");
-        }
-        return response;
-    }
-
 
     /**
      * Disconnects the socket and closes the buffers
