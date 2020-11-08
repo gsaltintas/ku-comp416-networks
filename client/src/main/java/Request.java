@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -69,10 +68,10 @@ public class Request {
             TCP.writeQueryMessage(connectionToServer.outputStream, token, weatherRequest, request);
             // int hashValue = Integer.parseInt(TCP.readQueryCommunicationResult(connectionToServer.inputStream));
             int hashValue = connectionToServer.inputStream.readInt();
+            Long timeStamp = connectionToServer.inputStream.readLong();
             System.out.println("Hash: " + hashValue);
             byte[] dataBytes = TCP.readQueryDataResult(connectionToData.inputStream);
             String fileExtension = "json";
-            // todo: quick tabular format print
             if (requestType == WeatherRequests.BasicWeatherMaps.getValue())
                 fileExtension = "png";
             //             (requestType==WeatherRequests.BasicWeatherMaps.getValue()) : ".json";
@@ -88,12 +87,6 @@ public class Request {
                 filename = String.format("%d-%s.%s", requestType, request, fileExtension);
                 receivedHash = Arrays.hashCode(dataBytes);
                 Request.constructFile(filename, dataBytes);
-            }
-
-            if (filename.endsWith("jpg")) {
-                JFrame frame = new JFrame();
-                ImageIcon icon = new ImageIcon(filename);
-                JLabel label = new JLabel(icon);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();

@@ -33,11 +33,7 @@ public class Main {
             }
         }
         connectionToServer.Disconnect();
-        /**
-         * 10) Terminate the connection in case an appropriate file is received and no other request
-         * forwarded within the timeout duration. (Appropriate tests for demonstration purposes
-         * should be developed.)
-         */
+        
     }
 }
 
