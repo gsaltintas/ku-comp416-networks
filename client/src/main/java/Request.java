@@ -1,7 +1,9 @@
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 import static java.time.LocalDateTime.now;
 
@@ -75,11 +77,15 @@ public class Request {
 
         try {
             int requestType = Integer.parseInt(request.split(",")[0]);
+            request = request.substring(request.indexOf(',') + 1);
             WeatherRequest weatherRequest = new WeatherRequest(requestType, request);
             int token = connectionToServer.getIntToken();
             TCP.writeQueryMessage(connectionToServer.outputStream, token, weatherRequest, request);
+            // int hashValue = Integer.parseInt(TCP.readQueryCommunicationResult(connectionToServer.inputStream));
+            int hashValue = connectionToServer.inputStream.readInt();
+            System.out.println("Hash: " + hashValue);
             byte[] dataBytes = TCP.readQueryDataResult(connectionToData.inputStream);
-            int hashValue = Integer.parseInt(TCP.readQueryCommunicationResult(connectionToServer.inputStream));
+
             String filename = String.format("%d-%s-%s", requestType, request, now());
             int receivedHash = Request.constructFile(filename, dataBytes);
             if (receivedHash != hashValue) {

@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -79,3 +80,13 @@ public class Main {
 //        connectionToServer.Disconnect();
     }
 }
+
+/*
+ connectionToServer.outputStream.writeByte(1); // Auth Phase
+         connectionToServer.outputStream.writeInt(Integer.parseInt(connectionToServer.token)); // Auth Challenge
+         connectionToServer.outputStream.writeByte(1);
+         String payload = "Istanbul";
+         int question_len = payload.getBytes().length; // Size of payload
+         connectionToServer.outputStream.writeInt(question_len); // write size
+         connectionToServer.outputStream.writeBytes(payload); // Write question
+         connectionToServer.outputStream.flush();*/

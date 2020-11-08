@@ -39,7 +39,7 @@ public class TCP {
 
     public static void writeQueryMessage(DataOutputStream outputStream, int token, WeatherRequest weatherRequest, String payload) throws IOException {
         outputStream.writeByte(QUERY_PHASE); // query Phase
-        outputStream.writeByte(token);
+        outputStream.writeInt(token);
         outputStream.writeByte(weatherRequest.getRequestType()); // Auth Challenge
         int question_len = payload.getBytes().length; // Size of payload
         outputStream.writeInt(question_len); // write size
@@ -48,7 +48,7 @@ public class TCP {
     }
 
     public static byte[] readQueryDataResult(DataInputStream inputStream) throws IOException {
-        if (inputStream.readByte() != QUERY_PHASE) {
+        /*if (inputStream.readByte() != QUERY_PHASE) {
             // If not query phase not valid
             int rem = inputStream.available();
             inputStream.skipBytes(rem);
@@ -68,6 +68,8 @@ public class TCP {
 //        }
         int payload_size = inputStream.readInt();
         return inputStream.readNBytes(payload_size);
+         */
+        return inputStream.readAllBytes();
     }
 
     public static String readQueryCommunicationResult(DataInputStream inputStream) throws IOException {
