@@ -1,39 +1,46 @@
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String args[]) {
+
         ConnectionToServer connectionToServer = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, ConnectionToServer.DEFAULT_SERVER_PORT);
         connectionToServer.Connect();
         Scanner scanner = new Scanner(System.in);
-//        boolean authenticated = connectionToServer.authenticate(scanner);
-        boolean authenticated = true;
+        boolean authenticated = connectionToServer.authenticate(scanner);
         if (authenticated) {
-            ConnectionToServer connectionToData = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, ConnectionToServer.DEFAULT_DATA_PORT);
-            connectionToData.Connect();
-            Request request = new Request();
-            request.displayOptions();
-            String reqType = scanner.nextLine();
+            try {
+                int dataPort = connectionToServer.inputStream.readInt();
+                ConnectionToServer connectionToData = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, dataPort);
+                connectionToData.Connect();
+                Request request = new Request();
+                request.displayOptions();
+                String reqType = scanner.nextLine();
 
-            while (!reqType.equalsIgnoreCase("quit")) {
-                // todo: make it
-                String hashValue = request.sendRequest(reqType, scanner, connectionToServer);
-                try {
-                    // todo: data transfer
-                    String data = "";
-//                    String data = connectionToData.listenToDataTransfer();
-                    if ("" + data.hashCode() != hashValue) {
-                        System.out.println("File transfer compromised, closing connection");
-                        //todo: inform server side
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                // Ilk byte 1 olacak,
+                // Token pass writeInt
+                // Type da 1 byte
+                // Size -> payload size
+                // Payload -> Type a gore payload handle edilecek. Delimiter: ,
+
+                while (!reqType.equalsIgnoreCase("quit")) {
+
+                    String hashValue = request.sendRequest(reqType, scanner, connectionToServer);
+//                try {
+//                    // todo: data transfer
+//                    connectionToData.SendForAnswer();
+//                }
                 }
+                connectionToData.Disconnect();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            // todo: timeout
-            connectionToData.Disconnect();
+
+
         }
+        connectionToServer.Disconnect();
         /**
          * Pass the requests to the server
          * 5) Receive the hash value of the file on the Command socket
@@ -48,7 +55,7 @@ public class Main {
          * should be developed.)
          */
 
-        connectionToServer.Disconnect();
+        //connectionToServer.Disconnect();
 
 //        if (token != "") {
 //            System.out.println("Authentication successfull");
