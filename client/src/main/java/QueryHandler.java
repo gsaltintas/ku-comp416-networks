@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Request {
+public class QueryHandler {
     private ConnectionToServer connectionToServer;
     private ConnectionToServer connectionToData;
 
-    public Request(ConnectionToServer connectionToServer, ConnectionToServer connectrionToData) {
+    public QueryHandler(ConnectionToServer connectionToServer, ConnectionToServer connectrionToData) {
         this.connectionToServer = connectionToServer;
         this.connectionToData = connectrionToData;
     }
@@ -77,7 +77,7 @@ public class Request {
             //             (requestType==WeatherRequests.BasicWeatherMaps.getValue()) : ".json";
             String filename = String.format("%d-%s-%d.%s", requestType, request, timestamp,fileExtension).replace(",", "_");
             int receivedHash = Arrays.hashCode(dataBytes);
-            Request.constructFile(filename, dataBytes);
+            QueryHandler.constructFile(filename, dataBytes);
             while (receivedHash != hashValue) {
                 connectionToServer.outputStream.writeInt("No".hashCode());
                 // request retransfer
@@ -87,7 +87,7 @@ public class Request {
                 dataBytes = TCP.readQueryDataResult(connectionToData.inputStream);
                 filename = String.format("%d-%s.%s", requestType, request, fileExtension);
                 receivedHash = Arrays.hashCode(dataBytes);
-                Request.constructFile(filename, dataBytes);
+                QueryHandler.constructFile(filename, dataBytes);
             }
             connectionToServer.outputStream.writeInt("Yes".hashCode()); // File received
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {

@@ -18,12 +18,12 @@ public class Main {
                 ConnectionToServer connectionToData = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, dataPort);
                 connectionToData.Connect();
 
-                Request requestHandler = new Request(connectionToServer, connectionToData);
-                requestHandler.displayOptions();
+                QueryHandler queryHandlerHandler = new QueryHandler(connectionToServer, connectionToData);
+                queryHandlerHandler.displayOptions();
                 while (scanner.hasNext() || !scanner.next().equalsIgnoreCase("quit")) {
 
                     String request = scanner.nextLine();
-                    requestHandler.request(request);
+                    queryHandlerHandler.request(request);
                     System.out.println("If you would like to quit type so.");
                 }
                 connectionToData.Disconnect();

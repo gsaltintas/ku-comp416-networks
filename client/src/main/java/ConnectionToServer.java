@@ -101,13 +101,6 @@ public class ConnectionToServer {
         }
     }
 
-    /**
-     * checks if the connection is still active
-     */
-    public boolean isConnectionActive() {
-        return this.socket != null && this.socket.isConnected() && !this.socket.isClosed() && !this.serverClosedSocket;
-    }
-
     public int getIntToken() {
         if (this.token != null) {
             return Integer.parseInt(this.token);
