@@ -1,35 +1,45 @@
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String args[]) {
+
         ConnectionToServer connectionToServer = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, ConnectionToServer.DEFAULT_SERVER_PORT);
         connectionToServer.Connect();
         Scanner scanner = new Scanner(System.in);
         boolean authenticated = connectionToServer.authenticate(scanner);
-//        boolean authenticated = true;
-        /*if (authenticated) {
-            ConnectionToServer connectionToData = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, ConnectionToServer.DEFAULT_DATA_PORT);
-            connectionToData.Connect();
-            Request request = new Request();
-            request.displayOptions();
-            String reqType = scanner.nextLine();
+        if (authenticated) {
+            try {
+                int dataPort = connectionToServer.inputStream.readInt();
+                ConnectionToServer connectionToData = new ConnectionToServer(ConnectionToServer.DEFAULT_SERVER_ADDRESS, dataPort);
+                connectionToData.Connect();
+                Request request = new Request();
+                request.displayOptions();
+                String reqType = scanner.nextLine();
 
-            while (!reqType.equalsIgnoreCase("quit")) {
+                // Ilk byte 1 olacak,
+                // Token pass writeInt
+                // Type da 1 byte
+                // Size -> payload size
+                // Payload -> Type a gore payload handle edilecek. Delimiter: ,
 
-                String hashValue = request.sendRequest(reqType, scanner, connectionToServer);
+                while (!reqType.equalsIgnoreCase("quit")) {
+
+                    String hashValue = request.sendRequest(reqType, scanner, connectionToServer);
 //                try {
 //                    // todo: data transfer
 //                    connectionToData.SendForAnswer();
 //                }
+                }
+                connectionToData.Disconnect();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            connectionToData.Disconnect();
-        }*/
-        String message = scanner.nextLine();
-        while (!message.equals("QUIT"))
-        {
-            System.out.println("Response from server: " + connectionToServer.SendForAnswer(message));
-            message = scanner.nextLine();
+
+
         }
         connectionToServer.Disconnect();
         /**
