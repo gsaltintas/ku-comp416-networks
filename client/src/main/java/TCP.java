@@ -48,30 +48,8 @@ public class TCP {
     }
 
     public static byte[] readQueryDataResult(DataInputStream inputStream) throws IOException {
-        /*if (inputStream.readByte() != QUERY_PHASE) {
-            // If not query phase not valid
-            int rem = inputStream.available();
-            inputStream.skipBytes(rem);
-            return null;
-        }
-//        int type = inputStream.readByte();
-//
-//        if (type != WeatherRequest.CurrentWeather &&
-//                type != WeatherRequest.DailyForecastFor7Days &&
-//                type != WeatherRequest.BasicWeatherMaps &&
-//                type != WeatherRequest.MinuteForecast &&
-//                type != WeatherRequest.HistoricalWeather) {
-//            // If not auth request not valid
-//            int rem = inputStream.available();
-//            inputStream.skipBytes(rem);
-//            return null;
-//        }
-   */
-
         int payload_size = inputStream.readInt();
         return inputStream.readNBytes(payload_size);
-
-        // return inputStream.readAllBytes();
     }
 
     public static String readQueryCommunicationResult(DataInputStream inputStream) throws IOException {
@@ -81,18 +59,6 @@ public class TCP {
             inputStream.skipBytes(rem);
             return null;
         }
-//        int type = inputStream.readByte();
-//
-//        if (type != WeatherRequest.CurrentWeather &&
-//                type != WeatherRequest.DailyForecastFor7Days &&
-//                type != WeatherRequest.BasicWeatherMaps &&
-//                type != WeatherRequest.MinuteForecast &&
-//                type != WeatherRequest.HistoricalWeather) {
-//            // If not auth request not valid
-//            int rem = inputStream.available();
-//            inputStream.skipBytes(rem);
-//            return null;
-//        }
         int payload_size = inputStream.readInt();
         String payload = new String(inputStream.readNBytes(payload_size));
         return payload;
