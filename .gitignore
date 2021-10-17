@@ -30,4 +30,9 @@ hs_err_pid*
 
 project1/
 Comp-416-WeatherAPI/
-
+*./out/*
+*.bin
+*.lock
+__MACOSX/
+*.docx
+.DS_Store
